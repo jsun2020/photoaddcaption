@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="免费在线图片字幕生成器，支持自定义字体、颜色和样式，轻松为图片添加字幕">
+    <meta name="keywords" content="图片字幕,字幕生成器,图片编辑,在线工具">
+    <meta name="author" content="Jason">
+    <meta property="og:title" content="图片字幕生成器">
+    <meta property="og:description" content="免费在线图片字幕生成器，支持自定义字体、颜色和样式">
+    <meta property="og:type" content="website">
+    <title>图片字幕生成器 @Jason</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1976D2;
+            font-size: 28px;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 20px;
+            min-height: 600px;
+        }
+
+        .control-panel {
+            flex: 0 0 400px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .preview-area {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            background: #fafafa;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #1976D2;
+            background: #f0f7ff;
+        }
+
+        .upload-btn {
+            background: #1976D2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background: #1565C0;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-hint {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        input[type="number"], select, textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #1976D2;
+        }
+
+        .color-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="color"] {
+            width: 40px;
+            height: 35px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .color-text {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            background: #1976D2;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #1565C0;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .placeholder {
+            color: #999;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .preview-canvas {
+            max-width: 100%;
+            max-height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .unit-label {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            pointer-events: none;
+            font-size: 12px;
+        }
+
+        .input-with-unit {
+            position: relative;
+        }
+
+        .input-with-unit input {
+            padding-right: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .control-panel {
+                flex: none;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>图片字幕生成器 @Jason</h1>
+        
+        <div class="main-content">
+            <!-- 左侧控制面板 -->
+            <div class="control-panel">
+                <!-- 图片上传 -->
+                <div class="section">
+                    <div class="section-title">上传图片</div>
+                    <div class="upload-area" id="uploadArea">
+                        <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                            + 选择图片
+                        </button>
+                        <input type="file" id="fileInput" class="file-input" accept="image/*">
+                        <div class="file-hint">未选择文件</div>
+                    </div>
+                </div>
+
+                <!-- 字幕设置 -->
+                <div class="section">
+                    <div class="section-title">字幕设置</div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>字体大小</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="fontSize" value="40" min="12" max="200">
+                                <span class="unit-label">px</span>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <label>字体小大</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="lineHeight" value="20" min="5" max="100">
+                                <span class="unit-label">px</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>字体颜色</label>
+                            <div class="color-input">
+                                <input type="color" id="textColor" value="#ffffff">
+                                <input type="text" id="textColorText" class="color-text" value="#ffffff">
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <label>背景颜色</label>
+                            <div class="color-input">
+                                <input type="color" id="bgColor" value="#000000">
+                                <input type="text" id="bgColorText" class="color-text" value="#000000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>字体样式</label>
+                            <select id="fontFamily">
+                                <option value="Arial, sans-serif">系统默认</option>
+                                <option value="'Microsoft YaHei', sans-serif">微软雅黑</option>
+                                <option value="'SimHei', sans-serif">黑体</option>
+                                <option value="'SimSun', serif">宋体</option>
+                                <option value="'KaiTi', serif">楷体</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label>字体类型</label>
+                            <select id="fontWeight">
+                                <option value="normal">正常</option>
+                                <option value="bold">粗体</option>
+                                <option value="lighter">细体</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 字幕内容 -->
+                <div class="section">
+                    <div class="section-title">字幕内容</div>
+                    <textarea id="captionText" placeholder="请输入字幕内容，每行将作为一个独立字幕"></textarea>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="section">
+                    <div class="action-buttons">
+                        <button class="btn-primary" id="generateBtn">生成字幕图片</button>
+                        <button class="btn-secondary" id="saveBtn" disabled>保存图片</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧预览区域 -->
+            <div class="preview-area">
+                <div class="placeholder" id="placeholder">
+                    📷<br>请先上传图片并生成字幕
+                </div>
+                <canvas id="previewCanvas" class="preview-canvas" style="display: none;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ImageCaptionGenerator {
+            constructor() {
+                this.canvas = document.getElementById('previewCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.originalImage = null;
+                this.initEventListeners();
+            }
+
+            initEventListeners() {
+                // 文件上传
+                document.getElementById('fileInput').addEventListener('change', (e) => {
+                    this.handleFileUpload(e);
+                });
+
+                // 颜色选择器同步
+                document.getElementById('textColor').addEventListener('change', (e) => {
+                    document.getElementById('textColorText').value = e.target.value;
+                    this.updatePreview();
+                });
+
+                document.getElementById('textColorText').addEventListener('input', (e) => {
+                    if (this.isValidColor(e.target.value)) {
+                        document.getElementById('textColor').value = e.target.value;
+                        this.updatePreview();
+                    }
+                });
+
+                document.getElementById('bgColor').addEventListener('change', (e) => {
+                    document.getElementById('bgColorText').value = e.target.value;
+                    this.updatePreview();
+                });
+
+                document.getElementById('bgColorText').addEventListener('input', (e) => {
+                    if (this.isValidColor(e.target.value)) {
+                        document.getElementById('bgColor').value = e.target.value;
+                        this.updatePreview();
+                    }
+                });
+
+                // 其他输入控件
+                ['fontSize', 'lineHeight', 'fontFamily', 'fontWeight', 'captionText'].forEach(id => {
+                    document.getElementById(id).addEventListener('input', () => {
+                        this.updatePreview();
+                    });
+                });
+
+                // 按钮事件
+                document.getElementById('generateBtn').addEventListener('click', () => {
+                    this.generateCaptionImage();
+                });
+
+                document.getElementById('saveBtn').addEventListener('click', () => {
+                    this.saveImage();
+                });
+
+                // 拖拽上传
+                const uploadArea = document.getElementById('uploadArea');
+                uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadArea.style.borderColor = '#1976D2';
+                    uploadArea.style.background = '#f0f7ff';
+                });
+
+                uploadArea.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    uploadArea.style.borderColor = '#ddd';
+                    uploadArea.style.background = '#fafafa';
+                });
+
+                uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadArea.style.borderColor = '#ddd';
+                    uploadArea.style.background = '#fafafa';
+                    
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0 && files[0].type.startsWith('image/')) {
+                        this.loadImage(files[0]);
+                    }
+                });
+            }
+
+            isValidColor(color) {
+                return /^#[0-9A-F]{6}$/i.test(color);
+            }
+
+            handleFileUpload(event) {
+                const file = event.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    this.loadImage(file);
+                }
+            }
+
+            loadImage(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        this.originalImage = img;
+                        document.querySelector('.file-hint').textContent = file.name;
+                        this.updatePreview();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            updatePreview() {
+                if (!this.originalImage) return;
+
+                const captionText = document.getElementById('captionText').value;
+                if (!captionText.trim()) {
+                    this.drawImageOnly();
+                    return;
+                }
+
+                this.generateCaptionImage();
+            }
+
+            drawImageOnly() {
+                const maxWidth = 800;
+                const maxHeight = 600;
+                let { width, height } = this.calculateImageSize(this.originalImage.width, this.originalImage.height, maxWidth, maxHeight);
+                
+                this.canvas.width = width;
+                this.canvas.height = height;
+                
+                this.ctx.clearRect(0, 0, width, height);
+                this.ctx.drawImage(this.originalImage, 0, 0, width, height);
+                
+                this.showCanvas();
+            }
+
+            calculateImageSize(originalWidth, originalHeight, maxWidth, maxHeight) {
+                let width = originalWidth;
+                let height = originalHeight;
+                
+                if (width > maxWidth) {
+                    height = (height * maxWidth) / width;
+                    width = maxWidth;
+                }
+                
+                if (height > maxHeight) {
+                    width = (width * maxHeight) / height;
+                    height = maxHeight;
+                }
+                
+                return { width: Math.round(width), height: Math.round(height) };
+            }
+
+            generateCaptionImage() {
+                if (!this.originalImage) {
+                    alert('请先上传图片！');
+                    return;
+                }
+
+                const captionText = document.getElementById('captionText').value;
+                if (!captionText.trim()) {
+                    alert('请输入字幕内容！');
+                    return;
+                }
+
+                // 获取设置参数
+                const fontSize = parseInt(document.getElementById('fontSize').value);
+                const lineHeight = parseInt(document.getElementById('lineHeight').value);
+                const textColor = document.getElementById('textColor').value;
+                const bgColor = document.getElementById('bgColor').value;
+                const fontFamily = document.getElementById('fontFamily').value;
+                const fontWeight = document.getElementById('fontWeight').value;
+
+                // 计算画布尺寸
+                const maxWidth = 800;
+                const maxHeight = 600;
+                let { width, height } = this.calculateImageSize(this.originalImage.width, this.originalImage.height, maxWidth, maxHeight);
+                
+                // 分割文本行
+                const lines = captionText.split('\n').filter(line => line.trim() !== '');
+                const captionLineHeight = fontSize + 16; // 每行字幕的实际高度
+                const totalCaptionHeight = lines.length * captionLineHeight;
+                
+                // 设置画布尺寸
+                this.canvas.width = width;
+                this.canvas.height = height + totalCaptionHeight; // 无额外间隙
+
+                // 清空画布
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // 绘制原图
+                this.ctx.drawImage(this.originalImage, 0, 0, width, height);
+
+                // 设置字体样式
+                this.ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+                this.ctx.textAlign = 'center';
+                this.ctx.textBaseline = 'middle';
+
+                // 绘制字幕（关键：实现切割效果）
+                const startY = height; // 紧贴原图，无间隙
+                lines.forEach((line, index) => {
+                    const y = startY + index * captionLineHeight + captionLineHeight / 2; // 紧密排列，无间隙
+                    this.drawCaptionLine(line.trim(), width / 2, y, fontSize, textColor, bgColor);
+                });
+
+                this.showCanvas();
+                document.getElementById('saveBtn').disabled = false;
+            }
+
+            drawCaptionLine(text, centerX, centerY, fontSize, textColor, bgColor) {
+                // 计算背景矩形的位置和尺寸
+                const bgHeight = fontSize + 16;
+                const bgY = centerY - bgHeight / 2;
+
+                // 绘制背景（关键：从左到右完全填充，实现切割效果）
+                this.ctx.fillStyle = bgColor;
+                this.ctx.fillRect(0, bgY, this.canvas.width, bgHeight);
+
+                // 绘制文字
+                this.ctx.fillStyle = textColor;
+                this.ctx.fillText(text, centerX, centerY);
+            }
+
+            showCanvas() {
+                document.getElementById('placeholder').style.display = 'none';
+                this.canvas.style.display = 'block';
+            }
+
+            saveImage() {
+                if (!this.canvas.width || !this.canvas.height) {
+                    alert('请先生成字幕图片！');
+                    return;
+                }
+
+                // 创建下载链接
+                const link = document.createElement('a');
+                link.download = 'caption-image.png';
+                link.href = this.canvas.toDataURL();
+                link.click();
+            }
+        }
+
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', () => {
+            new ImageCaptionGenerator();
+        });
+    </script>
+</body>
+</html>

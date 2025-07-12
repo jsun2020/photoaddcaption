@@ -1,0 +1,22 @@
+{
+  "name": "image-caption-generator",
+  "version": "1.0.0",
+  "description": "一个简单易用的图片字幕生成器，支持自定义字体、颜色和样式",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'No build step required for static site'"
+  },
+  "keywords": [
+    "image",
+    "caption",
+    "generator",
+    "frontend",
+    "canvas"
+  ],
+  "author": "Jason",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.0.0"
+  }
+}
